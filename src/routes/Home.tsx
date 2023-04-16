@@ -161,7 +161,14 @@ function PokemonSpotlight() {
             className="absolute object-scale-down scale-[1.8] inset-0 mx-auto pb-20"
           />
 
-          <Stack pt={90} align="center" justify="center" spacing={32} px={18}>
+          <Stack
+            pt={90}
+            align="center"
+            justify="center"
+            spacing={32}
+            px={18}
+            pb={20}
+          >
             <Stack align="center" spacing={2}>
               <Text c="dimmed" fw="bold" fz="md">
                 {getPokemonIdString(pokemon.id)}
