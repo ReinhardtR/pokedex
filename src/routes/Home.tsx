@@ -47,7 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const search = searchParams.get("q") || "";
   const page = Number(searchParams.get("page")) || 1;
 
-  if (page < 1 || page > LAST_POKEMON_ID / LIST_LIMIT) {
+  if (page < 1 || page > LAST_POKEMON_ID / LIST_LIMIT + 1) {
     return redirect("/");
   }
 
@@ -91,7 +91,7 @@ function PaginationButtons() {
   return (
     <Pagination
       color="red"
-      total={LAST_POKEMON_ID / LIST_LIMIT}
+      total={LAST_POKEMON_ID / LIST_LIMIT + 1}
       position="center"
       value={currentPage}
       grow
