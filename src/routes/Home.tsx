@@ -117,11 +117,12 @@ function PokemonSpotlight() {
   useEffect(() => {
     let ignore = false;
 
-    const selectedIdNum = Number(selectedId);
-    if (!selectedIdNum || selectedIdNum === pokemon?.id) return;
+    const pokemonId = isNaN(Number(selectedId)) ? 1 : Number(selectedId);
+
+    if (pokemonId === pokemon?.id) return;
 
     getPokemonById({
-      id: selectedIdNum,
+      id: pokemonId,
     }).then((p) => {
       if (ignore) return;
       setPokemon(p);
