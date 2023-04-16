@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { GithubIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Outlet, Link, NavLink as RouterNavLink } from "react-router-dom";
+import Logo from "../assets/pokeball.png";
 
 export default function Root() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -22,7 +23,7 @@ export default function Root() {
           <Group sx={{ height: "100%" }} px={20} position="apart">
             <Link to="/">
               <Group spacing="xs">
-                <Image src="/pokeball.png" height={32} width={32} />
+                <Image src={Logo} height={32} width={32} />
                 <Text fz="xl" fw="bold">
                   Pokédex
                 </Text>
@@ -37,7 +38,7 @@ export default function Root() {
             <Group>
               <ActionIcon variant="default" size={32}>
                 <a
-                  href="https://github.com/ReinhardtR/pokedex-cra"
+                  href="https://github.com/ReinhardtR/pokedex"
                   target="_blank"
                   rel="noreferrer"
                 >
