@@ -117,7 +117,18 @@ function PokemonSpotlight() {
   useEffect(() => {
     let ignore = false;
 
-    const pokemonId = isNaN(Number(selectedId)) ? 1 : Number(selectedId);
+    let pokemonId = 1;
+
+    if (selectedId) {
+      const selectedIdNum = Number(selectedId);
+      if (
+        !isNaN(selectedIdNum) &&
+        selectedIdNum > 0 &&
+        selectedIdNum <= LAST_POKEMON_ID
+      ) {
+        pokemonId = selectedIdNum;
+      }
+    }
 
     if (pokemonId === pokemon?.id) return;
 
