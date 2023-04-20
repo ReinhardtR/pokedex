@@ -1,7 +1,11 @@
 import { gql } from "graphql-tag";
 import { PokeAPIQuery, fetchPokeAPI } from "./helpers";
 import { z } from "zod";
-import { STAT_DISPLAY_NAMES, type StatName } from "../../config/pokemon-config";
+import {
+  LAST_POKEMON_ID,
+  STAT_DISPLAY_NAMES,
+  type StatName,
+} from "../../config/pokemon-config";
 
 const getPokemonByIdQuery = {
   input: z.object({
@@ -62,7 +66,7 @@ const getPokemonByIdQuery = {
                 name: z.string(),
                 pokemon_v2_pokemonevolutions: z.array(
                   z.object({
-                    min_level: z.number(),
+                    min_level: z.number().nullable(),
                   })
                 ),
               })
@@ -106,7 +110,7 @@ const getPokemonByIdQuery = {
             genus
           }
           pokemon_v2_evolutionchain {
-            pokemon_v2_pokemonspecies {
+            pokemon_v2_pokemonspecies(where: { id: { _lte: ${LAST_POKEMON_ID} } }) {
               id
               name
               pokemon_v2_pokemonevolutions {

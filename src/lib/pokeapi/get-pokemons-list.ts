@@ -10,6 +10,11 @@ const getPokemonsListQuery = {
     search: z.string(),
   }),
   output: z.object({
+    pokemon_v2_pokemon_aggregate: z.object({
+      aggregate: z.object({
+        count: z.number(),
+      }),
+    }),
     pokemon_v2_pokemon: z.array(
       z.object({
         id: z.number(),
@@ -27,6 +32,12 @@ const getPokemonsListQuery = {
   }),
   query: gql`
     query getPokemonsList($limit: Int!, $offset: Int!, $search: String) {
+      pokemon_v2_pokemon_aggregate(where: {id: {_lte: ${LAST_POKEMON_ID} }, name: {_regex: $search }
+      }) {
+        aggregate {
+          count
+        }
+      }
       pokemon_v2_pokemon(
         limit: $limit,
         offset: $offset,
@@ -79,5 +90,8 @@ export const getPokemonsList = async ({
     };
   });
 
-  return pokemons;
+  return {
+    count: data.pokemon_v2_pokemon_aggregate.aggregate.count,
+    pokemons,
+  };
 };

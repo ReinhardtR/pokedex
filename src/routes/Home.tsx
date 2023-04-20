@@ -19,7 +19,6 @@ import {
   Stack,
   Loader,
   Progress,
-  Button,
   Pagination,
 } from "@mantine/core";
 import {
@@ -27,7 +26,7 @@ import {
   PokemonType,
   getPokemonIdString,
 } from "../utils/pokemon-utils";
-import { ArrowLeftIcon, ArrowRightIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 import { useDebounce } from "../lib/hooks/use-debounce";
 import { PokemonById, getPokemonById } from "../lib/pokeapi/get-pokemon-by-id";
@@ -51,19 +50,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect("/");
   }
 
-  const pokemons = await getPokemonsList({
+  const pokemonsResult = await getPokemonsList({
     limit: LIST_LIMIT,
     offset: (page - 1) * LIST_LIMIT,
     search,
   });
 
   return {
-    pokemons,
+    pokemonsResult,
   };
 }
 
 export function Home() {
-  const { pokemons } = useLoaderData() as LoaderData<typeof loader>;
+  const { pokemonsResult } = useLoaderData() as LoaderData<typeof loader>;
 
   return (
     <Center>
@@ -71,11 +70,11 @@ export function Home() {
         <Stack spacing={40}>
           <PokemonSearchBar />
           <SimpleGrid cols={3} spacing="xl" verticalSpacing={56}>
-            {pokemons.map((pokemon) => (
+            {pokemonsResult.pokemons.map((pokemon) => (
               <PokemonCard key={pokemon.id} pokemon={pokemon} />
             ))}
           </SimpleGrid>
-          <PaginationButtons />
+          <PaginationButtons listSize={pokemonsResult.count} />
         </Stack>
         <PokemonSpotlight />
       </Group>
@@ -83,7 +82,7 @@ export function Home() {
   );
 }
 
-function PaginationButtons() {
+function PaginationButtons({ listSize }: { listSize: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -91,7 +90,7 @@ function PaginationButtons() {
   return (
     <Pagination
       color="red"
-      total={LAST_POKEMON_ID / LIST_LIMIT + 1}
+      total={listSize / LIST_LIMIT + 1}
       position="center"
       value={currentPage}
       grow
@@ -277,7 +276,11 @@ function PokemonSpotlight() {
                       />
                       {index < pokemon.evolutionChain!.length - 1 && (
                         <Badge color="gray" size="xs">
-                          Lvl {pokemon.evolutionChain![index + 1].minLevel}
+                          {pokemon.evolutionChain![index + 1].minLevel
+                            ? `Lvl ${
+                                pokemon.evolutionChain![index + 1].minLevel
+                              }`
+                            : `SPECIAL`}
                         </Badge>
                       )}
                     </Fragment>
@@ -303,6 +306,7 @@ function PokemonSearchBar() {
     if (debouncedQuery) {
       setSearchParams((sp) => {
         sp.set("q", debouncedQuery);
+        sp.delete("page");
         return sp;
       });
     } else {
